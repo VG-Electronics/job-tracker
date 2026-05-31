@@ -1,20 +1,21 @@
+Create database structure & Eloquent models with relations + the enums. 
+
 ## Database & Models
 
 websites:
 - id
 - name
 - url
-- base_url
 - created_at
 - updated_at
 
 persons:
 - id
 - name
-- email
-- phone
+- email (nullable)
+- phone (nullable)
 - role (enum PersonRole)
-- linkedin_url
+- linkedin_url (nullable)
 - created_at
 - updated_at
 
@@ -24,14 +25,14 @@ offers_persons:
 
 offers:
 - id
-- status (enum OfferStatus)
+- status (enum OfferStatus, default: new)
 - title
-- description
+- description (nullable)
 - url
-- min_salary
-- max_salary
-- salary_type (enum SalaryType)
-- note
+- min_salary (nullable)
+- max_salary (nullbable)
+- salary_type (enum SalaryType, nullable)
+- note (nullable)
 - created_at
 - updated_at
 
@@ -40,9 +41,9 @@ meetings:
 - offer_id
 - person_id
 - occurs_at
-- url
+- url (nullable)
 - title
-- note
+- note (nullable)
 - created_at
 - updated_at
 

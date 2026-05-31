@@ -1,6 +1,6 @@
-## Controllers
+Create the controllers and routes. All requests have to be separate FormRequest with validation.
 
-All requests have to be separate FormRequest with validation.
+## Controllers
 
 OffersController (JsonResponse)
 @get - returns latest offers from the database, supports pagination, sorting by date and salary and filtering by status and min_salary & salary_type

@@ -1,3 +1,4 @@
+Create the core services and repositories. Follow the best practices and typing. Architecture and naming must be consistent.
 
 ## Services
 

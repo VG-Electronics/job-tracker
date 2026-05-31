@@ -1,3 +1,5 @@
+Create the views for the application. Always split the views into smaller components.
+
 Three tabs: Offers, Meetings, Persons, Settings
 
 Offers:
