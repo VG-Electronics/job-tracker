@@ -1,9 +1,9 @@
-Create the core services and repositories. Follow the best practices and typing. Architecture and naming must be consistent.
+Create the core services and repositories. Follow the best practices and use typing. Architecture and naming must be consistent.
 
 ## Services
 
-ScrapperService
-@getOffers
+ScrapperService (dependency injection of ScrapperInterface):
+@getOffers($url) - uses ScrapperInterface instance to get result of offers listing from given url and prepares the offers data
 
 AiService (dependency injection of AiApiInterface):
 @prepareOffers($offers) - sends a prompt with offers to AiApiInterface, it does it in chunks of 10 offers. 
@@ -13,6 +13,9 @@ AI has to return JSON data ready to save in the database. It must calculate the 
 
 AiApiInterface (dependency injection):
 @send($prompt)
+
+ScrapperInterface (dependency injection):
+@getOffers($url)
 
 ## API
 
