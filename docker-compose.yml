@@ -1,0 +1,60 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: job-tracker-app
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: job_tracker
+      DB_USERNAME: laravel
+      DB_PASSWORD: laravel
+    networks:
+      - job-tracker
+
+  nginx:
+    image: nginx:alpine
+    container_name: job-tracker-nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - job-tracker
+    restart: on-failure
+
+  db:
+    image: mysql:8.0
+    container_name: job-tracker-db
+    environment:
+      MYSQL_DATABASE: job_tracker
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ularavel", "-plaravel"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - job-tracker
+
+networks:
+  job-tracker:
+    driver: bridge
+
+volumes:
+  db-data:
