@@ -19,12 +19,15 @@ class AiService
     private function buildPrompt(array $offers, ?string $additionalInstruction = null): string
     {
         $offersJson = json_encode($offers, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $extra = $additionalInstruction ? "\n{$additionalInstruction}\n" : '';
+        $filterSection = $additionalInstruction
+            ? "\n\nCRITICAL — MANDATORY FILTER RULES (apply BEFORE processing any offer):\n{$additionalInstruction}\nAny offer that violates the above rules MUST be completely excluded from the output JSON — do NOT include it in the \"offers\" array at all.\n"
+            : '';
 
         return <<<PROMPT
 You are a job offer parser. Given the following job offers in raw format, extract structured data and return a JSON object with an "offers" key containing an array of parsed offers.
+{$filterSection}
 Use web search to enter the given URLs to get and provide the best, meaningful data. Title and description must be in Polish language.
-{$extra}
+
 For each offer extract:
 - title: job title, eg. "Senior PHP Developer (Laravel, REST API)" (string)
 - company: name of the hiring company (the employer), not the recruitment agency (string or null)
