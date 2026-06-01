@@ -1,5 +1,15 @@
 <template>
   <BaseModal v-model="isOpen" :title="localOffer.title" wide>
+    <div v-if="localOffer.url" class="mb-5">
+      <a
+        :href="localOffer.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-secondary inline-flex items-center gap-1.5"
+        @click.stop
+      >↗ Zobacz ofertę</a>
+    </div>
+
     <!-- Offer details -->
     <section class="mb-6">
       <p class="section-title">Szczegóły oferty</p>
