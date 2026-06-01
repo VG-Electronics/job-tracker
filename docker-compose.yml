@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: job-tracker-app
+    ports:
+      - "5173:5173"
     volumes:
       - .:/var/www/html
     depends_on:
@@ -17,6 +19,26 @@ services:
       DB_PASSWORD: laravel
     networks:
       - job-tracker
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: job-tracker-scheduler
+    entrypoint: ["/scheduler-entrypoint.sh"]
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: job_tracker
+      DB_USERNAME: laravel
+      DB_PASSWORD: laravel
+    networks:
+      - job-tracker
+    restart: unless-stopped
 
   nginx:
     image: nginx:alpine

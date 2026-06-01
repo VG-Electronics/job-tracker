@@ -17,8 +17,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY docker/php/entrypoint.sh /entrypoint.sh
+COPY docker/php/scheduler-entrypoint.sh /scheduler-entrypoint.sh
 COPY docker/php/stubs /docker/stubs
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh /scheduler-entrypoint.sh
 
 EXPOSE 9000
 

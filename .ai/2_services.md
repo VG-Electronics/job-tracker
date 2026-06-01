@@ -8,6 +8,7 @@ ScrapperService (dependency injection of ScrapperInterface):
 AiService (dependency injection of AiApiInterface):
 @prepareOffers($offers) - sends a prompt with offers to AiApiInterface, it does it in chunks of 10 offers. 
 AI has to return JSON data ready to save in the database. It must calculate the salary in PLN currency.
+AI must extract: title, company (hiring employer), recruitment_company (agency, if different from employer), description, url, min_salary, max_salary, salary_type, status.
 
 ## Interfaces
 
@@ -20,6 +21,10 @@ ScrapperInterface (dependency injection):
 ## API
 
 /AI/OpenAiApi (implements AiApiInterface)
+
+## Scrappers
+
+Use a scrapper of your choice.
 
 ## Repositories
 
