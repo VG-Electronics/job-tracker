@@ -15,6 +15,7 @@
         :key="offer.id"
         :offer="offer"
         @click="openModal(offer)"
+        @updated="onOfferUpdated"
       />
     </div>
 

@@ -6,10 +6,15 @@
     <div class="flex items-start justify-between gap-3">
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 mb-1.5">
-          <span
-            class="text-xs font-medium px-2 py-0.5 rounded-full"
-            :class="STATUS_CLASSES[offer.status]"
-          >{{ STATUS_LABELS[offer.status] }}</span>
+          <select
+            :value="offer.status"
+            :class="['text-xs font-medium px-2 py-0.5 rounded-full cursor-pointer', STATUS_CLASSES[offer.status]]"
+            :disabled="saving"
+            @click.stop
+            @change.stop="changeStatus($event.target.value)"
+          >
+            <option v-for="s in OFFER_STATUSES" :key="s.value" :value="s.value">{{ s.label }}</option>
+          </select>
           <span class="text-xs text-gray-400">{{ fmtDate(offer.created_at) }}</span>
         </div>
         <h3 class="font-medium text-gray-900 truncate">{{ offer.title }}</h3>
@@ -36,11 +41,27 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { fmtDate, fmtDateTime, fmtSalary, STATUS_CLASSES, STATUS_LABELS } from '../../utils.js'
+import { ref, computed } from 'vue'
+import { api } from '../../api.js'
+import { fmtDate, fmtDateTime, fmtSalary, STATUS_CLASSES, OFFER_STATUSES } from '../../utils.js'
 
 const props = defineProps({ offer: Object })
-defineEmits(['click'])
+const emit = defineEmits(['click', 'updated'])
+
+const saving = ref(false)
+
+async function changeStatus(newStatus) {
+  if (newStatus === props.offer.status) return
+  saving.value = true
+  try {
+    const updated = await api.patch(`/offers/${props.offer.id}`, { status: newStatus })
+    emit('updated', { ...props.offer, ...updated })
+  } catch {
+    alert('Błąd podczas zmiany statusu.')
+  } finally {
+    saving.value = false
+  }
+}
 
 const salary = computed(() => fmtSalary(props.offer))
 
