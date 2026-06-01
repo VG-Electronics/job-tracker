@@ -40,7 +40,40 @@ if [ ! -f artisan ]; then
     npm run build --silent
 
     echo "==> Done. Job Tracker is ready at http://localhost:8000"
+
+elif [ ! -d vendor ]; then
+    echo "==> Fresh git clone detected — installing dependencies..."
+
+    if [ ! -f .env ]; then
+        cp .env.example .env
+        sed -i "s/^DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
+        sed -i "s/^# DB_HOST=.*/DB_HOST=${DB_HOST:-db}/" .env
+        sed -i "s/^# DB_PORT=.*/DB_PORT=3306/" .env
+        sed -i "s/^# DB_DATABASE=.*/DB_DATABASE=${DB_DATABASE:-job_tracker}/" .env
+        sed -i "s/^# DB_USERNAME=.*/DB_USERNAME=${DB_USERNAME:-laravel}/" .env
+        sed -i "s/^# DB_PASSWORD=.*/DB_PASSWORD=${DB_PASSWORD:-laravel}/" .env
+        sed -i "s/^SESSION_DRIVER=.*/SESSION_DRIVER=file/" .env
+        php artisan key:generate --quiet
+    fi
+
+    composer install --no-interaction --quiet
+
+    if [ ! -d public/build ]; then
+        echo "==> Building frontend assets..."
+        npm install --silent
+        npm run build --silent
+    fi
+
+    echo "==> Done."
 fi
+
+echo "==> Ensuring storage directories exist..."
+mkdir -p storage/app/public \
+         storage/framework/cache/data \
+         storage/framework/sessions \
+         storage/framework/views \
+         storage/logs \
+         bootstrap/cache
 
 echo "==> Fixing storage permissions..."
 chown -R www-data:www-data storage bootstrap/cache
