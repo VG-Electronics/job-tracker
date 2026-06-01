@@ -275,6 +275,7 @@ async function saveOffer() {
     })
     localOffer.value = { ...updated, persons: localOffer.value.persons, meetings: localOffer.value.meetings }
     emit('updated', localOffer.value)
+    isOpen.value = false
   } catch (e) {
     alert('Błąd podczas zapisywania oferty.')
   } finally {

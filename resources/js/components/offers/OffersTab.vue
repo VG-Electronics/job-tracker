@@ -94,8 +94,14 @@ function openModal(offer) {
 
 function onOfferUpdated(updated) {
   const idx = offers.value.findIndex(o => o.id === updated.id)
-  if (idx !== -1) offers.value[idx] = updated
-  selectedOffer.value = updated
+  if (idx === -1) return
+  const statusFilter = filters.status
+  if (statusFilter && updated.status !== statusFilter) {
+    offers.value.splice(idx, 1)
+  } else {
+    offers.value[idx] = updated
+    selectedOffer.value = updated
+  }
 }
 
 watch(filters, () => load(true), { deep: true })
