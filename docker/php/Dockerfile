@@ -18,8 +18,9 @@ WORKDIR /var/www/html
 
 COPY docker/php/entrypoint.sh /entrypoint.sh
 COPY docker/php/scheduler-entrypoint.sh /scheduler-entrypoint.sh
+COPY docker/php/queue-entrypoint.sh /queue-entrypoint.sh
 COPY docker/php/stubs /docker/stubs
-RUN chmod +x /entrypoint.sh /scheduler-entrypoint.sh
+RUN chmod +x /entrypoint.sh /scheduler-entrypoint.sh /queue-entrypoint.sh
 
 EXPOSE 9000
 

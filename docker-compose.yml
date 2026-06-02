@@ -40,8 +40,30 @@ services:
       - job-tracker
     restart: unless-stopped
 
+  queue:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: job-tracker-queue
+    entrypoint: ["/queue-entrypoint.sh"]
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: job_tracker
+      DB_USERNAME: laravel
+      DB_PASSWORD: laravel
+    networks:
+      - job-tracker
+    restart: unless-stopped
+
   nginx:
-    image: nginx:alpine
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
     container_name: job-tracker-nginx
     ports:
       - "8000:80"
@@ -50,6 +72,9 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
+    environment:
+      AUTH_LOGIN: ${AUTH_LOGIN}
+      AUTH_PASSWORD: ${AUTH_PASSWORD}
     networks:
       - job-tracker
     restart: on-failure
