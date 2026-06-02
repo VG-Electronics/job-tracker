@@ -26,6 +26,7 @@ export function fmtSalary(offer) {
 export const STATUS_LABELS = {
   new: 'Nowa',
   ignored: 'Ignorowana',
+  interested: 'Zainteresowany',
   applied: 'Aplikowano',
   rejected: 'Odrzucona',
   interview: 'Rozmowa',
@@ -35,6 +36,7 @@ export const STATUS_LABELS = {
 export const STATUS_CLASSES = {
   new: 'bg-blue-100 text-blue-700',
   ignored: 'bg-gray-100 text-gray-500',
+  interested: 'bg-teal-100 text-teal-700',
   applied: 'bg-amber-100 text-amber-700',
   rejected: 'bg-red-100 text-red-700',
   interview: 'bg-purple-100 text-purple-700',
