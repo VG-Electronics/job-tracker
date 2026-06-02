@@ -8,6 +8,6 @@ class WebsitesRepository
 {
     public function getWebsites(): array
     {
-        return Website::select('url', 'offer_url_part')->get()->toArray();
+        return Website::select('url', 'offer_url_part', 'js_render')->get()->toArray();
     }
 }

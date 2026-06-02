@@ -33,7 +33,7 @@ For each offer extract:
 - company: name of the hiring company (the employer), not the recruitment agency (string or null)
 - recruitment_company: name of the recruitment/staffing agency conducting the recruitment, if different from the hiring company (string or null)
 - description: brief description about the role, requirements, company and its business branch (string, max 500 chars)
-- url: the original offer URL, dob't change it (string)
+- url: the original offer URL, don't change it (string)
 - min_salary: minimum salary as integer in PLN, converted from any currency (integer or null)
 - max_salary: maximum salary as integer in PLN, converted from any currency (integer or null)
 - salary_type: one of "hourly", "monthly", "annually" (string or null)

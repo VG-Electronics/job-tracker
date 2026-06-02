@@ -31,7 +31,7 @@ class FetchNewOffersJob implements ShouldQueue
 
         foreach ($websites as $website) {
             try {
-                $offers = $scrapperService->getOffers($website['url'], $website['offer_url_part'] ?? null);
+                $offers = $scrapperService->getOffers($website['url'], $website['offer_url_part'] ?? null, (bool) ($website['js_render'] ?? false));
                 $count = count($offers);
                 $allOffers = array_merge($allOffers, $offers);
                 $logger->log("Pobrano $count ofert ze strony: {$website['url']}");
@@ -92,7 +92,12 @@ class FetchNewOffersJob implements ShouldQueue
                 $aiCount = count($preparedOffers);
                 $uniqueCount = count($uniqueOffers);
                 $skipped = $aiCount - $uniqueCount;
-                $logger->log("AI zwróciło $aiCount ofert dla chunk $chunkNum/$totalChunks" . ($skipped > 0 ? " (pominięto $skipped duplikatów URL)" : ''));
+
+                if ($aiCount === 0) {
+                    $logger->log("AI zwróciło pustą kolekcję ofert dla chunk $chunkNum/$totalChunks (poprawna struktura JSON, offers: [])");
+                } else {
+                    $logger->log("AI zwróciło $aiCount ofert dla chunk $chunkNum/$totalChunks" . ($skipped > 0 ? " (pominięto $skipped duplikatów URL)" : ''));
+                }
 
                 foreach ($uniqueOffers as $offer) {
                     Offer::create($offer);

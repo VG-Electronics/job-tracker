@@ -14,9 +14,9 @@ class OpenAiApi implements AiApiInterface
         try {
             $response = Http::withToken(config('services.openai.key'))
                 ->connectTimeout(10)
-//                ->timeout(60)
+                ->timeout(120)
                 ->post('https://api.openai.com/v1/responses', [
-                'model' => config('services.openai.model', 'gpt-4o-mini'),
+                'model' => config('services.openai.model'),
                 'tools' => [['type' => 'web_search']],
                 'input' => $prompt,
             ]);
@@ -53,6 +53,12 @@ class OpenAiApi implements AiApiInterface
 
         $output = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
-        return $output['offers'] ?? [];
+        if (!array_key_exists('offers', $output)) {
+            throw new RuntimeException(
+                'OpenAI zwróciło JSON bez klucza "offers". Klucze: [' . implode(', ', array_keys($output)) . ']. Treść: ' . mb_substr($content, 0, 300)
+            );
+        }
+
+        return $output['offers'];
     }
 }

@@ -1,5 +1,8 @@
 FROM php:8.5-fpm-alpine
 
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
 RUN apk add --no-cache \
     git \
     curl \
@@ -8,7 +11,13 @@ RUN apk add --no-cache \
     zip \
     unzip \
     nodejs \
-    npm
+    npm \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
 
 RUN docker-php-ext-install pdo_mysql mbstring xml bcmath
 

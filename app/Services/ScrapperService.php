@@ -2,17 +2,20 @@
 
 namespace App\Services;
 
-use App\Contracts\ScrapperInterface;
+use App\Scrappers\BrowserScrapper;
+use App\Scrappers\HttpScrapper;
 
 class ScrapperService
 {
     public function __construct(
-        private readonly ScrapperInterface $scrapper,
+        private readonly HttpScrapper $httpScrapper,
+        private readonly BrowserScrapper $browserScrapper,
     ) {}
 
-    public function getOffers(string $url, ?string $offerUrlPart = null): array
+    public function getOffers(string $url, ?string $offerUrlPart = null, bool $jsRender = false): array
     {
-        $raw = $this->scrapper->getOffers($url, $offerUrlPart);
+        $scrapper = $jsRender ? $this->browserScrapper : $this->httpScrapper;
+        $raw = $scrapper->getOffers($url, $offerUrlPart);
 
         return array_values(array_filter(
             array_map(fn(array $offer) => $this->normalize($offer), $raw),

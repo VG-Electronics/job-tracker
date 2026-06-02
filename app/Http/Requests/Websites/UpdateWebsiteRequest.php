@@ -17,6 +17,7 @@ class UpdateWebsiteRequest extends FormRequest
             'name'           => 'string|max:255',
             'url'            => 'url',
             'offer_url_part' => 'nullable|string|max:255',
+            'js_render'      => 'boolean',
         ];
     }
 }

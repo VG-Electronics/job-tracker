@@ -17,6 +17,7 @@ class CreateWebsiteRequest extends FormRequest
             'name'           => 'required|string|max:255',
             'url'            => 'required|url',
             'offer_url_part' => 'nullable|string|max:255',
+            'js_render'      => 'boolean',
         ];
     }
 }

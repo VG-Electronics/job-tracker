@@ -14,6 +14,11 @@
         <input type="text" v-model="form.offer_url_part" class="form-input" placeholder="np. /oferta/ lub /job/">
         <p class="text-xs text-gray-500 mt-1">Tylko linki zawierające ten fragment będą traktowane jako oferty.</p>
       </div>
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="js_render" v-model="form.js_render" class="w-4 h-4 rounded">
+        <label for="js_render" class="form-label mb-0 cursor-pointer">Renderowanie JavaScript (SPA)</label>
+      </div>
+      <p class="text-xs text-gray-500 -mt-2">Użyj dla stron, które ładują oferty dynamicznie (Angular, React, Vue).</p>
       <div class="flex items-center justify-between pt-1">
         <button
           v-if="website"
@@ -54,6 +59,7 @@ const form = reactive({
   name: props.website?.name ?? '',
   url: props.website?.url ?? '',
   offer_url_part: props.website?.offer_url_part ?? '',
+  js_render: props.website?.js_render ?? false,
 })
 
 async function save() {
