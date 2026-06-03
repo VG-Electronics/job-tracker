@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['status', 'title', 'company', 'recruitment_company', 'description', 'url', 'min_salary', 'max_salary', 'salary_type', 'note'])]
+#[Fillable(['status', 'title', 'company', 'recruitment_company', 'description', 'url', 'min_salary', 'max_salary', 'salary_type', 'note', 'is_starred'])]
 class Offer extends Model
 {
     protected function casts(): array
@@ -17,6 +17,7 @@ class Offer extends Model
         return [
             'status' => OfferStatus::class,
             'salary_type' => SalaryType::class,
+            'is_starred' => 'boolean',
         ];
     }
 

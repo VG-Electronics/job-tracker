@@ -29,9 +29,16 @@
           @click.stop
         >{{ offer.url }}</a>
       </div>
-      <div class="text-right shrink-0">
+      <div class="flex flex-col items-end gap-1.5 shrink-0">
+        <button
+          type="button"
+          :class="['text-xl leading-none transition-colors', offer.is_starred ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-300']"
+          :disabled="saving"
+          @click.stop="toggleStar"
+          title="Oznacz jako ulubione"
+        >{{ offer.is_starred ? '★' : '☆' }}</button>
         <p v-if="salary" class="text-sm font-semibold text-gray-700">{{ salary }}</p>
-        <p v-if="nextMeeting" class="text-xs text-gray-500 mt-1.5">
+        <p v-if="nextMeeting" class="text-xs text-gray-500">
           📅 {{ nextMeeting.title }}<br>
           <span class="text-gray-400">{{ fmtDateTime(nextMeeting.occurs_at) }}</span>
         </p>
@@ -58,6 +65,18 @@ async function changeStatus(newStatus) {
     emit('updated', { ...props.offer, ...updated })
   } catch {
     alert('Błąd podczas zmiany statusu.')
+  } finally {
+    saving.value = false
+  }
+}
+
+async function toggleStar() {
+  saving.value = true
+  try {
+    const updated = await api.patch(`/offers/${props.offer.id}`, { is_starred: !props.offer.is_starred })
+    emit('updated', { ...props.offer, ...updated })
+  } catch {
+    alert('Błąd podczas zmiany ulubionej.')
   } finally {
     saving.value = false
   }

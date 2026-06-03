@@ -59,6 +59,8 @@ const filters = reactive({
   status: '',
   min_salary: '',
   salary_type: '',
+  search: '',
+  starred: false,
 })
 
 async function load(reset = false) {
@@ -96,8 +98,9 @@ function openModal(offer) {
 function onOfferUpdated(updated) {
   const idx = offers.value.findIndex(o => o.id === updated.id)
   if (idx === -1) return
-  const statusFilter = filters.status
-  if (statusFilter && updated.status !== statusFilter) {
+  if (filters.status && updated.status !== filters.status) {
+    offers.value.splice(idx, 1)
+  } else if (filters.starred && !updated.is_starred) {
     offers.value.splice(idx, 1)
   } else {
     offers.value[idx] = updated

@@ -1,5 +1,14 @@
 <template>
   <div class="card p-4 flex flex-wrap gap-4 items-end">
+    <div class="w-full sm:w-auto flex-1 min-w-48">
+      <label class="form-label">Szukaj</label>
+      <input
+        type="text"
+        v-model="local.search"
+        placeholder="Tytuł, firma, opis…"
+        class="form-input w-full"
+      >
+    </div>
     <div>
       <label class="form-label">Sortowanie</label>
       <select v-model="sortKey" class="form-input w-auto">
@@ -32,6 +41,17 @@
         <option value="">Dowolny</option>
         <option v-for="t in SALARY_TYPES" :key="t.value" :value="t.value">{{ t.label }}</option>
       </select>
+    </div>
+    <div>
+      <label class="form-label">Ulubione</label>
+      <button
+        type="button"
+        @click="local.starred = !local.starred"
+        :class="['form-input w-auto flex items-center gap-1.5 transition-colors', local.starred ? 'bg-yellow-50 border-yellow-400 text-yellow-600' : 'text-gray-400']"
+      >
+        <span>{{ local.starred ? '★' : '☆' }}</span>
+        <span class="text-sm">{{ local.starred ? 'Tylko ulubione' : 'Wszystkie' }}</span>
+      </button>
     </div>
   </div>
 </template>

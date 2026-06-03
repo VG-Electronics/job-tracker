@@ -26,6 +26,8 @@ class GetOffersRequest extends FormRequest
             'status'      => "in:$statuses",
             'min_salary'  => 'integer|min:0',
             'salary_type' => "in:$salaryTypes",
+            'search'      => 'nullable|string|max:255',
+            'starred'     => 'nullable|boolean',
         ];
     }
 }

@@ -1,13 +1,23 @@
 <template>
   <BaseModal v-model="isOpen" :title="localOffer.title" wide>
-    <div v-if="localOffer.url" class="mb-5">
+    <div class="mb-5 flex items-center gap-3">
       <a
+        v-if="localOffer.url"
         :href="localOffer.url"
         target="_blank"
         rel="noopener noreferrer"
         class="btn-secondary inline-flex items-center gap-1.5"
         @click.stop
       >↗ Zobacz ofertę</a>
+      <button
+        type="button"
+        :class="['inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-sm font-medium transition-colors', localOffer.is_starred ? 'bg-yellow-50 border-yellow-400 text-yellow-600' : 'border-gray-200 text-gray-400 hover:text-yellow-500 hover:border-yellow-300']"
+        :disabled="starringSaving"
+        @click="toggleStar"
+      >
+        <span class="text-base leading-none">{{ localOffer.is_starred ? '★' : '☆' }}</span>
+        {{ localOffer.is_starred ? 'Ulubiona' : 'Dodaj do ulubionych' }}
+      </button>
     </div>
 
     <!-- Offer details -->
@@ -256,6 +266,7 @@ watch(() => props.offer, o => {
 }, { deep: true })
 
 const saving = ref(false)
+const starringSaving = ref(false)
 const showPersonForm = ref(false)
 const showMeetingForm = ref(false)
 const addingPerson = ref(false)
@@ -267,6 +278,19 @@ const meetingForm = reactive({ title: '', person_id: '', occurs_at: '', url: '',
 const sortedMeetings = computed(() =>
   [...(localOffer.value.meetings ?? [])].sort((a, b) => new Date(a.occurs_at) - new Date(b.occurs_at))
 )
+
+async function toggleStar() {
+  starringSaving.value = true
+  try {
+    const updated = await api.patch(`/offers/${localOffer.value.id}`, { is_starred: !localOffer.value.is_starred })
+    localOffer.value = { ...localOffer.value, is_starred: updated.is_starred }
+    emit('updated', localOffer.value)
+  } catch {
+    alert('Błąd podczas zmiany ulubionej.')
+  } finally {
+    starringSaving.value = false
+  }
+}
 
 async function saveOffer() {
   saving.value = true

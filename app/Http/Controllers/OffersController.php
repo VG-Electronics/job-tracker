@@ -27,10 +27,25 @@ class OffersController extends Controller
             $query->where('salary_type', $salaryType);
         }
 
+        if ($request->boolean('starred')) {
+            $query->where('is_starred', true);
+        }
+
+        if ($search = $request->query('search')) {
+            $like = '%' . $search . '%';
+            $query->where(function ($q) use ($like) {
+                $q->where('title', 'like', $like)
+                  ->orWhere('description', 'like', $like)
+                  ->orWhere('company', 'like', $like)
+                  ->orWhere('recruitment_company', 'like', $like);
+            });
+        }
+
         $sortBy = $request->query('sort_by') === 'salary' ? 'min_salary' : 'created_at';
         $sortDir = $request->query('sort_dir', 'desc');
 
         $offers = $query->with(['persons', 'meetings.person'])
+            ->orderByDesc('is_starred')
             ->orderBy($sortBy, $sortDir)
             ->paginate($request->integer('per_page', 15));
 

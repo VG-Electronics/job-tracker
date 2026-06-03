@@ -29,6 +29,7 @@ class UpdateOfferRequest extends FormRequest
             'max_salary'           => 'nullable|integer|min:0',
             'salary_type'          => "nullable|in:$salaryTypes",
             'note'                 => 'nullable|string',
+            'is_starred'           => 'boolean',
         ];
     }
 }
