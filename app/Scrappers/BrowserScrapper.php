@@ -14,7 +14,7 @@ class BrowserScrapper implements ScrapperInterface
         $html = Browsershot::url($url)
             ->setChromePath(env('CHROMIUM_PATH', '/usr/bin/chromium-browser'))
             ->noSandbox()
-            ->addChromiumArguments(['--disable-dev-shm-usage'])
+            ->addChromiumArguments(['disable-dev-shm-usage'])
             ->waitUntilNetworkIdle()
             ->bodyHtml();
 

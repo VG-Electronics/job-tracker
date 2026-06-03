@@ -20,7 +20,7 @@ class AiService
     {
         $offersJson = json_encode($offers, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         $filterSection = $additionalInstruction
-            ? "\n\nCRITICAL — MANDATORY FILTER RULES (apply BEFORE processing any offer):\n{$additionalInstruction}\nAny offer that violates the above rules MUST be completely excluded from the output JSON — do NOT include it in the \"offers\" array at all.\n"
+            ? "\n\nFILTER RULES — evaluate every offer against these rules:\n{$additionalInstruction}\nIf an offer violates any of the above rules, set its \"status\" to \"ignored\". Otherwise set \"status\" to \"new\". IMPORTANT: include ALL offers in the output — never skip or exclude any offer.\n"
             : '';
 
         return <<<PROMPT
@@ -37,7 +37,7 @@ For each offer extract:
 - min_salary: minimum salary as integer in PLN, converted from any currency (integer or null)
 - max_salary: maximum salary as integer in PLN, converted from any currency (integer or null)
 - salary_type: one of "hourly", "monthly", "annually" (string or null)
-- status: always set to "new" (string)
+- status: "new" if the offer passes the filter rules, "ignored" if it violates any filter rule (string)
 
 Currency conversion rates to use: 1 EUR = 4.25 PLN, 1 USD = 3.95 PLN, 1 GBP = 5.05 PLN, 1 CHF = 4.45 PLN.
 If salary is not mentioned set min_salary, max_salary and salary_type to null.

@@ -67,7 +67,8 @@ class FetchNewOffersJob implements ShouldQueue
 
         $chunks = array_chunk($newOffers, 10);
         $totalChunks = count($chunks);
-        $savedCount = 0;
+        $savedNewCount = 0;
+        $savedIgnoredCount = 0;
         $seenUrls = [];
         $additionalInstruction = AppSetting::getValue('ai_additional_instruction');
 
@@ -99,17 +100,26 @@ class FetchNewOffersJob implements ShouldQueue
                     $logger->log("AI zwróciło $aiCount ofert dla chunk $chunkNum/$totalChunks" . ($skipped > 0 ? " (pominięto $skipped duplikatów URL)" : ''));
                 }
 
+                $chunkNew = 0;
+                $chunkIgnored = 0;
                 foreach ($uniqueOffers as $offer) {
                     Offer::create($offer);
-                    $savedCount++;
+                    if (($offer['status'] ?? 'new') === 'ignored') {
+                        $chunkIgnored++;
+                        $savedIgnoredCount++;
+                    } else {
+                        $chunkNew++;
+                        $savedNewCount++;
+                    }
                 }
 
-                $logger->log("Zapisano $uniqueCount ofert (łącznie w bazie: $savedCount)");
+                $logger->log("Zapisano $uniqueCount ofert w chunk $chunkNum/$totalChunks (nowych: $chunkNew, ignorowanych: $chunkIgnored)");
             } catch (\Throwable $e) {
                 $logger->logError("Błąd AI dla chunk $chunkNum/$totalChunks: {$e->getMessage()}");
             }
         }
 
-        $logger->log("Zakończono. Łącznie zapisano $savedCount ofert");
+        $totalSaved = $savedNewCount + $savedIgnoredCount;
+        $logger->log("Zakończono. Łącznie zapisano $totalSaved ofert — nowych: $savedNewCount, ignorowanych: $savedIgnoredCount");
     }
 }
