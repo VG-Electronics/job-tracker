@@ -16,7 +16,7 @@ async function req(method, path, body) {
 export const api = {
   get(path, params = {}) {
     const clean = Object.fromEntries(
-      Object.entries(params).filter(([, v]) => v != null && v !== '')
+      Object.entries(params).filter(([, v]) => v != null && v !== '' && v !== false)
     )
     const qs = new URLSearchParams(clean).toString()
     return req('GET', qs ? `${path}?${qs}` : path)
