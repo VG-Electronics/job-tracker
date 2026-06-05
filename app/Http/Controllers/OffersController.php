@@ -49,7 +49,9 @@ class OffersController extends Controller
             ->orderBy($sortBy, $sortDir)
             ->paginate($request->integer('per_page', 15));
 
-        return response()->json($offers);
+        return response()->json(array_merge($offers->toArray(), [
+            'applied_today' => Offer::whereDate('applied_at', today())->count(),
+        ]));
     }
 
     public function fetchNewOffers(FetchNewOffersRequest $request): JsonResponse

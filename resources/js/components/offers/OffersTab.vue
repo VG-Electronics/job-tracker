@@ -9,6 +9,12 @@
 
     <OffersFilters :model-value="filters" @update:model-value="val => Object.assign(filters, val)" />
 
+    <div class="flex items-center gap-4 text-sm text-gray-500 px-1">
+      <span>Ofert: <strong class="text-gray-700">{{ totalFiltered }}</strong></span>
+      <span class="text-gray-300">|</span>
+      <span>Aplikacji dzisiaj: <strong :class="appliedToday > 0 ? 'text-green-600' : 'text-gray-700'">{{ appliedToday }}</strong></span>
+    </div>
+
     <div v-if="offers.length" class="space-y-3">
       <OfferCard
         v-for="offer in offers"
@@ -48,6 +54,8 @@ const offers = ref([])
 const loading = ref(false)
 const currentPage = ref(0)
 const lastPage = ref(1)
+const totalFiltered = ref(0)
+const appliedToday = ref(0)
 const fetching = ref(false)
 const selectedOffer = ref(null)
 const showModal = ref(false)
@@ -73,6 +81,8 @@ async function load(reset = false) {
     offers.value = reset ? res.data : [...offers.value, ...res.data]
     currentPage.value = res.current_page
     lastPage.value = res.last_page
+    totalFiltered.value = res.total
+    appliedToday.value = res.applied_today
   } finally {
     loading.value = false
   }
