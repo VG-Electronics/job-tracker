@@ -98,6 +98,25 @@ services:
       retries: 10
     networks:
       - job-tracker
+    restart: unless-stopped
+
+  backup:
+    build:
+      context: .
+      dockerfile: docker/backup/Dockerfile
+    container_name: job-tracker-backup
+    environment:
+      MYSQL_HOST: db
+      MYSQL_DATABASE: job_tracker
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    volumes:
+      - ./backups:/backups
+    depends_on:
+      - db
+    networks:
+      - job-tracker
+    restart: unless-stopped
 
 networks:
   job-tracker:
