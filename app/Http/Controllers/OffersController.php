@@ -31,6 +31,10 @@ class OffersController extends Controller
             $query->where('is_starred', true);
         }
 
+        if ($request->boolean('today_only')) {
+            $query->whereDate('created_at', today());
+        }
+
         if ($search = $request->query('search')) {
             $like = '%' . $search . '%';
             $query->where(function ($q) use ($like) {

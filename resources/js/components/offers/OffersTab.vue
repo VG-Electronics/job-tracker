@@ -69,6 +69,7 @@ const filters = reactive({
   salary_type: '',
   search: '',
   starred: false,
+  today_only: false,
 })
 
 async function load(reset = false) {

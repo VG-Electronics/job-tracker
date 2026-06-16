@@ -28,6 +28,7 @@ class GetOffersRequest extends FormRequest
             'salary_type' => "in:$salaryTypes",
             'search'      => 'nullable|string|max:255',
             'starred'     => 'nullable|boolean',
+            'today_only'  => 'nullable|boolean',
         ];
     }
 }
