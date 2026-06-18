@@ -25,8 +25,10 @@ class ScrapperService
 
     private function normalize(array $offer): array
     {
+        $rawUrl = $offer['url'] ?? '';
+
         return [
-            'url' => $offer['url'] ?? '',
+            'url' => preg_replace('/\?.*$/', '', $rawUrl),
             'title' => trim($offer['title'] ?? ''),
             'description' => trim($offer['description'] ?? ''),
         ];
