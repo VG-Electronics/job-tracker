@@ -10,6 +10,7 @@ enum OfferStatus: string
     case Interested = 'interested';
     case Applied = 'applied';
     case Rejected = 'rejected';
+    case Assessed = 'assessed';
     case Interview = 'interview';
     case Offer = 'offer';
 }

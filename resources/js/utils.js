@@ -30,6 +30,7 @@ export const STATUS_LABELS = {
   interested: 'Zainteresowany',
   applied: 'Aplikowano',
   rejected: 'Odrzucona',
+  assessed: 'Zadanie techniczne',
   interview: 'Rozmowa',
   offer: 'Oferta',
 }
