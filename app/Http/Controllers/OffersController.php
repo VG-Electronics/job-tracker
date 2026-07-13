@@ -49,8 +49,8 @@ class OffersController extends Controller
         $sortDir = $request->query('sort_dir', 'desc');
 
         $offers = $query->with(['persons', 'meetings.person'])
-            ->orderByDesc('is_starred')
             ->orderBy($sortBy, $sortDir)
+            ->orderByDesc('is_starred')
             ->paginate($request->integer('per_page', 15));
 
         return response()->json(array_merge($offers->toArray(), [
