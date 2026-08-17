@@ -15,12 +15,16 @@ async function req(method, path, body) {
 
 export const api = {
   get(path, params = {}) {
-    const clean = Object.fromEntries(
-      Object.entries(params)
-        .filter(([, v]) => v != null && v !== '' && v !== false)
-        .map(([k, v]) => [k, typeof v === 'boolean' ? (v ? 1 : 0) : v])
-    )
-    const qs = new URLSearchParams(clean).toString()
+    const qsParams = new URLSearchParams()
+    Object.entries(params).forEach(([k, v]) => {
+      if (v == null || v === '' || v === false) return
+      if (Array.isArray(v)) {
+        v.forEach(item => qsParams.append(`${k}[]`, item))
+      } else {
+        qsParams.append(k, typeof v === 'boolean' ? (v ? 1 : 0) : v)
+      }
+    })
+    const qs = qsParams.toString()
     return req('GET', qs ? `${path}?${qs}` : path)
   },
   post: (path, body) => req('POST', path, body),

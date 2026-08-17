@@ -29,6 +29,8 @@ class GetOffersRequest extends FormRequest
             'search'      => 'nullable|string|max:255',
             'starred'     => 'nullable|boolean',
             'today_only'  => 'nullable|boolean',
+            'hosts'   => 'nullable|array',
+            'hosts.*' => 'string|max:255|regex:/^[a-z0-9.-]+$/i',
         ];
     }
 }

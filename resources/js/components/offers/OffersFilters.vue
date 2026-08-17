@@ -72,12 +72,38 @@
           <span class="text-sm">{{ local.today_only ? 'Dzisiaj' : 'Wszystkie' }}</span>
         </button>
       </div>
+      <div class="relative" ref="hostDropdownRef">
+        <label class="form-label">Domena</label>
+        <button
+          type="button"
+          @click="hostDropdownOpen = !hostDropdownOpen"
+          :class="['form-input w-48 flex items-center justify-between gap-2 text-left transition-colors', local.hosts.length ? 'bg-blue-50 border-blue-400 text-blue-600' : 'text-gray-400']"
+        >
+          <span class="truncate">{{ hostFilterLabel }}</span>
+          <span class="text-xs shrink-0">▾</span>
+        </button>
+        <div
+          v-if="hostDropdownOpen"
+          class="absolute z-20 mt-1 w-56 max-h-64 overflow-y-auto bg-white border border-gray-200 rounded-md shadow-lg py-1"
+        >
+          <label
+            v-for="host in hostOptions"
+            :key="host"
+            class="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+          >
+            <input type="checkbox" :value="host" v-model="local.hosts" class="w-4 h-4 rounded">
+            <span class="truncate">{{ host }}</span>
+          </label>
+          <div v-if="!hostOptions.length" class="px-3 py-2 text-xs text-gray-400">Brak zdefiniowanych stron</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, computed, watch } from 'vue'
+import { reactive, computed, watch, ref, onMounted, onUnmounted } from 'vue'
+import { api } from '../../api.js'
 import { OFFER_STATUSES, SALARY_TYPES } from '../../utils.js'
 
 const props = defineProps({ modelValue: Object })
@@ -93,6 +119,42 @@ const sortKey = computed({
     local.sort_dir = sort_dir
   },
 })
+
+const websites = ref([])
+const hostDropdownOpen = ref(false)
+const hostDropdownRef = ref(null)
+
+function extractHost(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./i, '').toLowerCase()
+  } catch {
+    return null
+  }
+}
+
+const hostOptions = computed(() => {
+  const hosts = websites.value.map(w => extractHost(w.url)).filter(Boolean)
+  return [...new Set(hosts)].sort()
+})
+
+const hostFilterLabel = computed(() => {
+  const count = local.hosts.length
+  if (count === 0) return 'Wszystkie'
+  if (count === 1) return local.hosts[0]
+  return `${count} wybrane`
+})
+
+function handleClickOutside(e) {
+  if (hostDropdownOpen.value && hostDropdownRef.value && !hostDropdownRef.value.contains(e.target)) {
+    hostDropdownOpen.value = false
+  }
+}
+
+onMounted(async () => {
+  document.addEventListener('click', handleClickOutside)
+  websites.value = await api.get('/websites')
+})
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 
 watch(local, () => emit('update:modelValue', { ...local }), { deep: true })
 </script>

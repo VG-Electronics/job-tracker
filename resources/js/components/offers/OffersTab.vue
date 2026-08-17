@@ -70,6 +70,7 @@ const filters = reactive({
   search: '',
   starred: false,
   today_only: false,
+  hosts: [],
 })
 
 async function load(reset = false) {

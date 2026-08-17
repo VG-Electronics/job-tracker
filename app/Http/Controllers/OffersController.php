@@ -35,6 +35,20 @@ class OffersController extends Controller
             $query->whereDate('created_at', today());
         }
 
+        if ($request->filled('hosts')) {
+            $hosts = collect($request->array('hosts'))
+                ->map(fn ($host) => strtolower(trim($host)))
+                ->filter();
+
+            if ($hosts->isNotEmpty()) {
+                $query->where(function ($q) use ($hosts) {
+                    foreach ($hosts as $host) {
+                        $q->orWhere('url', 'like', '%' . $host . '%');
+                    }
+                });
+            }
+        }
+
         if ($search = $request->query('search')) {
             $like = '%' . $search . '%';
             $query->where(function ($q) use ($like) {
