@@ -9,7 +9,9 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::job(new FetchNewOffersJob)->dailyAt('06:00');
-Schedule::job(new FetchNewOffersJob)->dailyAt('09:00');
-Schedule::job(new FetchNewOffersJob)->dailyAt('12:00');
-Schedule::job(new FetchNewOffersJob)->dailyAt('18:00');
+foreach (['06:00', '09:00', '12:00', '14:00', '18:00'] as $time) {
+    Schedule::job(new FetchNewOffersJob)
+        ->dailyAt($time)
+        ->name('fetch-new-offers')
+        ->withoutOverlapping(180);
+}

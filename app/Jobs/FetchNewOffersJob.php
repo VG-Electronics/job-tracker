@@ -9,10 +9,9 @@ use App\Repositories\WebsitesRepository;
 use App\Services\AiService;
 use App\Services\FetchOffersLoggerService;
 use App\Services\ScrapperService;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class FetchNewOffersJob implements ShouldQueue
+class FetchNewOffersJob
 {
     use Queueable;
 
