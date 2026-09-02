@@ -40,4 +40,9 @@ return [
         'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
     ],
 
+    'basic_auth' => [
+        'login' => env('AUTH_LOGIN'),
+        'password' => env('AUTH_PASSWORD'),
+    ],
+
 ];
