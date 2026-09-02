@@ -76,16 +76,35 @@ class FetchNewOffersJob
             $chunkSize = count($chunk);
             $logger->log("Przetwarzanie AI chunk $chunkNum/$totalChunks ($chunkSize ofert)");
 
+            $indexedChunk = [];
+            $chunkWithIds = [];
+            foreach (array_values($chunk) as $localId => $item) {
+                $indexedChunk[$localId] = $item;
+                $item['id'] = $localId;
+                $chunkWithIds[] = $item;
+            }
+
             try {
-                $preparedOffers = $aiService->prepareChunk($chunk, $additionalInstruction);
+                $preparedOffers = $aiService->prepareChunk($chunkWithIds, $additionalInstruction);
 
                 $uniqueOffers = [];
                 foreach ($preparedOffers as $offer) {
-                    $url = $offer['url'] ?? null;
-                    if ($url === null || isset($seenUrls[$url])) {
+                    $id = $offer['id'] ?? null;
+                    if ($id === null || !isset($indexedChunk[$id])) {
+                        $logger->logError("Pominięto ofertę od AI bez poprawnego dopasowania id (chunk $chunkNum/$totalChunks)");
+                        continue;
+                    }
+
+                    // URL musi pochodzić wyłącznie z naszego scrapera, nigdy z odpowiedzi AI —
+                    // model może zwrócić lekko zmieniony URL po użyciu web_search, co psuje deduplikację.
+                    $url = $indexedChunk[$id]['url'];
+                    if (isset($seenUrls[$url])) {
                         continue;
                     }
                     $seenUrls[$url] = true;
+
+                    $offer['url'] = $url;
+                    unset($offer['id']);
                     $uniqueOffers[] = $offer;
                 }
 
@@ -102,7 +121,9 @@ class FetchNewOffersJob
                 $chunkNew = 0;
                 $chunkIgnored = 0;
                 foreach ($uniqueOffers as $offer) {
-                    Offer::create($offer);
+                    $url = $offer['url'];
+                    unset($offer['url']);
+                    Offer::firstOrCreate(['url' => $url], $offer);
                     if (($offer['status'] ?? 'new') === 'ignored') {
                         $chunkIgnored++;
                         $savedIgnoredCount++;

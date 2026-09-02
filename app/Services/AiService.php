@@ -26,14 +26,16 @@ class AiService
         return <<<PROMPT
 You are a job offer parser. Given the following job offers in raw format, extract structured data and return a JSON object with an "offers" key containing an array of parsed offers.
 {$filterSection}
-Use web search to enter the given URLs to get and provide the best, meaningful data. Title and description must be in Polish language.
+You may use web search to visit the given URLs to get and provide the best, meaningful data. Title and description must be in Polish language.
+
+Every input offer has an "id" (integer). You MUST include that exact same "id" in your output for the matching offer, unchanged. It is used only to match your output back to the input — do not skip any offer, do not invent new ids, and never reuse an id for a different offer. Do NOT include a "url" field in the output — the URL is looked up separately using the "id".
 
 For each offer extract:
+- id: copy the input id exactly, unchanged (integer)
 - title: job title, eg. "Senior PHP Developer (Laravel, REST API)" (string)
 - company: name of the hiring company (the employer), not the recruitment agency (string or null)
 - recruitment_company: name of the recruitment/staffing agency conducting the recruitment, if different from the hiring company (string or null)
 - description: brief description about the role, requirements, company and its business branch (string, max 500 chars)
-- url: the original offer URL, don't change it (string)
 - min_salary: minimum salary as integer in PLN, converted from any currency (integer or null)
 - max_salary: maximum salary as integer in PLN, converted from any currency (integer or null)
 - salary_type: one of "hourly", "monthly", "annually" (string or null)
